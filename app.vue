@@ -3,11 +3,18 @@
     <div class="bg-black text-white p-8 flex flex-col gap-4 py-32">
       <img v-if="art" :src="art.url" alt="Art" :class="width > height ? 'w-screen' : 'h-screen'"
            class="object-cover fixed scale-150 blur-lg z-0 opacity-20 -translate-x-1/2 left-1/2 -translate-y-1/2 top-1/2">
-      <p :id="`line-${index}`" v-for="(line, index) in lines"
-         :class="index === activeLine ? 'opacity-100' : 'opacity-25'"
-         class="text-4xl font-bold z-10" v-bind:key="index">
-        {{ line.line }}
+
+      <p v-if="!hasLyrics" class="text-4xl font-bold z-10 opacity-50">
+        No lyrics available
       </p>
+      <template v-else>
+        <p :id="`line-${index}`" v-for="(line, index) in lines"
+           :class="index === activeLine ? 'opacity-100' : 'opacity-25'"
+           class="text-4xl font-bold z-10" :key="index">
+          {{ line.line }}
+        </p>
+      </template>
+
       <p class="opacity-10 text-sm">
         &copy; rxsto {{ new Date().getFullYear() }}
       </p>
@@ -61,25 +68,25 @@ if (!apiKey.value) {
   navigateTo('/', {replace: true})
 }
 
-const {data: state, refresh} = await useFetch<State>(`${baseUrl}/current`, {
+const {data: state, error, refresh} = await useFetch<State>(`${baseUrl}/current`, {
   headers: {
     'Authorization': apiKey.value
   }
 })
 
-let timeDiscrepancy: number;
-const serverTime = state.value?.time;
-if (!serverTime.value) {
-  timeDiscrepancy = 0;
-} else {
-  timeDiscrepancy = new Date(serverTime.value.utc_datetime).getTime() - Date.now()
-  console.log(timeDiscrepancy);
+let timeDiscrepancy = 0
+const serverTime = state.value?.time
+if (serverTime) {
+  timeDiscrepancy = new Date(serverTime.utc_datetime).getTime() - Date.now()
+  console.log(timeDiscrepancy)
 }
 
-const lyrics = computed(() => state.value.lyrics)
+const lyrics = computed(() => state.value?.lyrics)
 const lines = computed(() => lyrics.value?.lines)
 const track = computed(() => lyrics.value?.track)
-const art = computed(() => track.value?.albumArt[track.value?.albumArt.length - 1])
+const art = computed(() => track.value?.albumArt?.[track.value.albumArt.length - 1])
+
+const hasLyrics = computed(() => !error.value && !!lines.value?.length)
 
 const activeLine = ref(0)
 const scrollingAnchor = ref(0)
@@ -131,10 +138,6 @@ onMounted(() => {
         refresh()
         break
     }
-  }
-
-  if (!lyrics.value) {
-    return
   }
 
   interval = setInterval(() => {
