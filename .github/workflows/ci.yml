@@ -5,21 +5,21 @@ on:
         branches:
             - master
 env:
-  BASE_URL: musikus.gutikus.schlau.bi
+  BASE_URL: https://musikus.gutikus.schlau.bi
 
 jobs:
     deploy:
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v4
-            - uses: pnpm/action-setup@v4
-            - uses: actions/setup-node@v4
+            - uses: actions/checkout@v6
+            - uses: pnpm/action-setup@v6
+            - uses: actions/setup-node@v7
               with:
                 cache: 'pnpm'
             - run: pnpm i --shamefully-hoist
             - run: pnpm run build
             - name: Deploy
-              uses: cloudflare/wrangler-action@v3
+              uses: cloudflare/wrangler-action@v4
               with:
                 apiToken: ${{ secrets.CLOUDFLARE_TOKEN }}
                 accountId: 9a0d3ae785f5f07eb410e63ec29712ec

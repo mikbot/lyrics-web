@@ -9,9 +9,7 @@ export default defineNuxtConfig({
 
   modules: [
     'nitro-cloudflare-dev',
-    'nuxt-icon',
     '@nuxt/ui',
-    '@nuxtjs/tailwindcss',
     '@vueuse/nuxt'
   ],
 

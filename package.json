@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "engines": {
-    "node": "23"
+    "node": "26"
   },
   "scripts": {
     "build": "nuxt build",
@@ -14,15 +14,15 @@
   },
   "devDependencies": {
     "@nuxt/devtools": "latest",
-    "@nuxt/ui": "^2.19.2",
-    "@nuxtjs/tailwindcss": "^6.12.2",
-    "@vueuse/core": "^10.11.1",
-    "@vueuse/nuxt": "^10.11.1",
-    "nuxt": "^3.14.159",
-    "nuxt-icon": "^0.6.10",
-    "vue": "^3.5.12",
-    "vue-router": "^4.4.5",
-    "nitro-cloudflare-dev": "^0.2.1"
+    "@nuxt/ui": "^4.12.2",
+    "@vueuse/core": "^15.0.0",
+    "@vueuse/nuxt": "^15.0.0",
+    "nitro-cloudflare-dev": "^0.2.2",
+    "nuxt": "^4.6.4",
+    "tailwindcss": "^4.3.5",
+    "vue": "^3.5.45",
+    "vue-router": "^5.5.1",
+    "wrangler": "^4.164.0"
   },
   "packageManager": "pnpm@9.13.1+sha512.5ac37545851c55ec58521b6c285db6f848f93ca70889beb4145f5b40fe234e4ea4faee4dad12ac5c139e494374c65d9c3a6ec9a25954378fa286a250e68d2f20"
 }

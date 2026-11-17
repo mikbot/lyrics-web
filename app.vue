@@ -38,9 +38,8 @@
 </template>
 
 <script lang="ts" setup>
-import { UseFetchOptions } from './node_modules/nuxt/app';
-import { State } from './types/lyrics';
-import { PlayerStateUpdateEvent } from './types/events';
+import type { State } from './types/lyrics';
+import type { PlayerStateUpdateEvent } from './types/events';
 
 const DEFAULT_OFFSET = 300
 
