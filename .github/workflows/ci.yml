@@ -6,6 +6,7 @@ on:
             - master
 env:
   BASE_URL: https://musikus.gutikus.schlau.bi
+  WS_URL: wss://musikus.gutikus.schlau.bi
 
 jobs:
     deploy:
