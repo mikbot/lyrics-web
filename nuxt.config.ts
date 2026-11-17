@@ -7,6 +7,7 @@ export default defineNuxtConfig({
     preset: "cloudflare-pages"
   },
 
+  css: ["assets/css/tailwind.css"],
   modules: [
     'nitro-cloudflare-dev',
     '@nuxt/ui',

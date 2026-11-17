@@ -1,45 +1,48 @@
 <template>
-  <div class="bg-black text-white p-8 flex flex-col gap-4 py-32">
-    <img v-if="art" :src="art.url" alt="Art" :class="width > height ? 'w-screen' : 'h-screen'"
-         class="object-cover fixed scale-150 blur-lg z-0 opacity-20 -translate-x-1/2 left-1/2 -translate-y-1/2 top-1/2">
-    <p :id="`line-${index}`" v-for="(line, index) in lines" :class="index === activeLine ? 'opacity-100' : 'opacity-25'"
-       class="text-4xl font-bold z-10" v-bind:key="index">
-      {{ line.line }}
-    </p>
-    <p class="opacity-10 text-sm">
-      &copy; rxsto {{ new Date().getFullYear() }}
-    </p>
-  </div>
-  <div v-if="track" class="bg-neutral-800 text-white w-full p-8 fixed top-0 z-10">
-    <div class="flex gap-2 items-center">
-      <img v-if="art" :src="art.url" alt="Art" class="h-6">
-      <p class="font-medium">
-        {{ track.title }} - {{ track.author }}
+  <UApp>
+    <div class="bg-black text-white p-8 flex flex-col gap-4 py-32">
+      <img v-if="art" :src="art.url" alt="Art" :class="width > height ? 'w-screen' : 'h-screen'"
+           class="object-cover fixed scale-150 blur-lg z-0 opacity-20 -translate-x-1/2 left-1/2 -translate-y-1/2 top-1/2">
+      <p :id="`line-${index}`" v-for="(line, index) in lines"
+         :class="index === activeLine ? 'opacity-100' : 'opacity-25'"
+         class="text-4xl font-bold z-10" v-bind:key="index">
+        {{ line.line }}
+      </p>
+      <p class="opacity-10 text-sm">
+        &copy; rxsto {{ new Date().getFullYear() }}
       </p>
     </div>
-  </div>
-  <div class="fixed top-8 right-8 z-20 flex gap-4 items-center">
-    <button v-if="hasScrolled" @click="resetScrolling()">
-      <Icon name="fluent:arrow-sync-circle-24-filled" class="text-2xl"/>
-    </button>
-    <button @click="settingsActive = !settingsActive">
-      <Icon name="fluent:settings-32-filled" class="text-2xl"/>
-    </button>
-  </div>
-  <Transition name="fade">
-    <div v-if="settingsActive" class="bg-neutral-800 text-white w-full p-8 fixed bottom-0 z-10">
-      <div class="flex items-center gap-4">
-        <p class="flex gap-1"><span class="opacity-50">Delay:</span>{{ offset }}ms</p>
-        <URange :min="-2000" :max="2000" v-model="offset"/>
-        <UButton @click="offset = DEFAULT_OFFSET">Reset</UButton>
+    <div v-if="track" class="bg-neutral-800 text-white w-full p-8 fixed top-0 z-10">
+      <div class="flex gap-2 items-center">
+        <img v-if="art" :src="art.url" alt="Art" class="h-6">
+        <p class="font-medium">
+          {{ track.title }} - {{ track.author }}
+        </p>
       </div>
     </div>
-  </Transition>
+    <div class="fixed top-8 right-8 z-20 flex gap-4 items-center">
+      <button v-if="hasScrolled" @click="resetScrolling()">
+        <Icon name="fluent:arrow-sync-circle-24-filled" class="text-2xl"/>
+      </button>
+      <button @click="settingsActive = !settingsActive">
+        <Icon name="fluent:settings-32-filled" class="text-2xl"/>
+      </button>
+    </div>
+    <Transition name="fade">
+      <div v-if="settingsActive" class="bg-neutral-800 text-white w-full p-8 fixed bottom-0 z-10">
+        <div class="flex items-center gap-4">
+          <p class="flex gap-1"><span class="opacity-50">Delay:</span>{{ offset }}ms</p>
+          <USlider :min="-2000" :max="2000" v-model="offset"/>
+          <UButton @click="offset = DEFAULT_OFFSET">Reset</UButton>
+        </div>
+      </div>
+    </Transition>
+  </UApp>
 </template>
 
 <script lang="ts" setup>
-import type { State } from './types/lyrics';
-import type { PlayerStateUpdateEvent } from './types/events';
+import type {State} from './types/lyrics';
+import type {PlayerStateUpdateEvent} from './types/events';
 
 const DEFAULT_OFFSET = 300
 
