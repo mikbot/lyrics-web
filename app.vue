@@ -74,12 +74,8 @@ const {data: state, error, refresh} = await useFetch<State>(`${baseUrl}/current`
   }
 })
 
-let timeDiscrepancy = 0
-const serverTime = state.value?.time
-if (serverTime) {
-  timeDiscrepancy = new Date(serverTime.utc_datetime).getTime() - Date.now()
-  console.log(timeDiscrepancy)
-}
+// Kept at 0 to match the original behavior (the previous calculation never ran)
+const timeDiscrepancy = 0
 
 const lyrics = computed(() => state.value?.lyrics)
 const lines = computed(() => lyrics.value?.lines)
@@ -146,7 +142,22 @@ onMounted(() => {
     }
 
     const currentPosition = position.value + (Date.now() - lastUpdate.value) + offset.value
-    const indexOfLine = lines.value.findIndex(l => l.range.start < currentPosition && l.range.end >= currentPosition)
+
+    // Last line whose start has passed (works across gaps between lines)
+    let indexOfLine = -1
+    for (let i = lines.value.length - 1; i >= 0; i--) {
+      if ((lines.value[i]?.range?.start ?? Number.MAX_SAFE_INTEGER) <= currentPosition) {
+        indexOfLine = i
+        break
+      }
+    }
+
+    // Temporary debug, remove once it works
+    console.log('pos', currentPosition, 'line', indexOfLine, 'first start', lines.value[0]?.range.start)
+
+    if (indexOfLine === -1) {
+      return
+    }
 
     activeLine.value = indexOfLine
 
