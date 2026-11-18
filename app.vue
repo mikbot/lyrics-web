@@ -131,7 +131,9 @@ onMounted(() => {
       case 'player_stopped':
         break
       case 'next_track':
-        refresh()
+        refresh().then(() => {
+          hasScrolled.value = false
+        })
         break
     }
   }
