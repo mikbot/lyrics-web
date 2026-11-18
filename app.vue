@@ -116,7 +116,7 @@ onMounted(() => {
   ws.onclose = (ev) => console.log(ev)
   ws.onerror = (ev) => console.log(ev)
 
-  ws.onmessage = (ev) => {
+  ws.onmessage = async (ev) => {
     const data = JSON.parse(ev.data)
     const type = data.type
 
@@ -131,9 +131,13 @@ onMounted(() => {
       case 'player_stopped':
         break
       case 'next_track':
-        refresh().then(() => {
-          hasScrolled.value = false
-        })
+        await refresh()
+
+        // New song: re-enable autoscroll and start from the top
+        activeLine.value = 0
+        scrollingAnchor.value = 0
+        hasScrolled.value = false
+        scrollToPosition(0)
         break
     }
   }
@@ -148,14 +152,11 @@ onMounted(() => {
     // Last line whose start has passed (works across gaps between lines)
     let indexOfLine = -1
     for (let i = lines.value.length - 1; i >= 0; i--) {
-      if ((lines.value[i]?.range?.start ?? Number.MAX_SAFE_INTEGER) <= currentPosition) {
+      if (lines.value[i].range.start <= currentPosition) {
         indexOfLine = i
         break
       }
     }
-
-    // Temporary debug, remove once it works
-    console.log('pos', currentPosition, 'line', indexOfLine, 'first start', lines.value[0]?.range.start)
 
     if (indexOfLine === -1) {
       return
